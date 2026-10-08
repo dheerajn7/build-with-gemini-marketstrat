@@ -1,8 +1,8 @@
-# MarketStrat — Corporate Strategy & Equity Intelligence Agent
+# MarketStrat MVP (Beta) — Corporate Strategy & Equity Intelligence Agent
 
-![MarketStrat Demo](./demo.gif)
+![MarketStrat MVP Demo](./demo.gif)
 
-**MarketStrat** is an autonomous corporate strategy and equity intelligence agent built with the Google Agent Development Kit (ADK) and Gemini on Vertex AI. It conducts multi-dimensional corporate evaluations covering real-time financial fundamentals, SEC filings, indexed Wall Street analyst consensus, and strategic action plans—rendering comprehensive briefings as structured A2UI cards.
+**MarketStrat MVP** is an autonomous corporate strategy and equity intelligence agent (Beta release) built with the Google Agent Development Kit (ADK) and Gemini on Vertex AI. It conducts multi-dimensional corporate evaluations covering real-time financial fundamentals, SEC filings, indexed Wall Street analyst consensus, and strategic action plans—rendering comprehensive briefings as structured A2UI cards.
 
 ---
 

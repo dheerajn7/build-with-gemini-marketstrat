@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MarketStrat | Corporate Strategy & Equity Intelligence</title>
+<title>MarketStrat MVP (Beta) | Corporate Strategy & Equity Intelligence</title>
 <!-- Optional: used only to draw A2UI Icon components. If it can't load (offline/
      corp network), icons fall back to showing their name as text. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
@@ -58,6 +58,17 @@
   }
   .header-title { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.01em; }
   .header-sub { font-weight: 400; font-size: 0.82rem; opacity: 0.85; margin-left: 0.4rem; }
+  .header-badges { display: flex; align-items: center; gap: 0.5rem; }
+  .beta-tag {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: #f59e0b;
+    color: #0f172a;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+  }
   .header-badge {
     font-size: 0.75rem;
     background: rgba(255, 255, 255, 0.18);
@@ -328,11 +339,14 @@
   <div class="header-brand">
     <div class="header-logo">📈</div>
     <div>
-      <span class="header-title">MarketStrat</span>
+      <span class="header-title">MarketStrat MVP</span>
       <span class="header-sub">Corporate Strategy & Equity Intelligence</span>
     </div>
   </div>
-  <span class="header-badge">A2A + Vertex AI</span>
+  <div class="header-badges">
+    <span class="beta-tag">BETA MVP</span>
+    <span class="header-badge">A2A + Vertex AI</span>
+  </div>
 </header>
 
 <div id="control-panel">
@@ -468,7 +482,7 @@ function bubble(who) {
   }
   
   const container = el("div", "bubble-container");
-  const senderLabel = el("div", "sender-name", who === "agent" ? "MarketStrat AI" : "You");
+  const senderLabel = el("div", "sender-name", who === "agent" ? "MarketStrat MVP AI (Beta)" : "You");
   const b = el("div", "bubble");
   
   container.appendChild(senderLabel);

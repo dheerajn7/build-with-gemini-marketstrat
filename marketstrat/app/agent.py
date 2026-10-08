@@ -64,7 +64,7 @@ if os.path.exists(_INSTRUCTION_PATH):
         instruction = f.read()
 else:
     instruction = (
-        "You are MarketStrat, an elite corporate strategy and equity intelligence agent. "
+        "You are MarketStrat MVP (Beta), an elite corporate strategy and equity intelligence agent. "
         "Your mission is to provide comprehensive, thorough strategic briefings on companies. "
         "When analyzing a company, conduct a multi-dimensional evaluation covering financial fundamentals, "
         "Wall Street sentiment, stock price correlation, and actionable corporate strategy."
