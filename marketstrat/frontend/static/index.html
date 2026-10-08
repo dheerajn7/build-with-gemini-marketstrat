@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarketStrat | Corporate Strategy & Equity Intelligence</title>
+<!-- Optional: used only to draw A2UI Icon components. If it can't load (offline/
+     corp network), icons fall back to showing their name as text. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+<style>
+  :root {
+    --accent: #0f766e;           /* Deep Emerald */
+    --accent-hover: #115e59;     /* Dark Emerald */
+    --accent-light: #f0fdf4;     /* Mint Tint */
+    --accent-glow: rgba(15, 118, 110, 0.12);
+    --gold: #d97706;             /* Financial Accent / Amber */
+    --bg: #f8fafc;               /* Slate 50 */
+    --card-bg: #ffffff;
+    --border: #e2e8f0;           /* Slate 200 */
+    --border-subtle: #cbd5e1;    /* Slate 300 */
+    --text: #0f172a;             /* Slate 900 */
+    --text-secondary: #334155;   /* Slate 700 */
+    --muted: #64748b;            /* Slate 500 */
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #092e2b 0%, #0f766e 60%, #115e59 100%);
+    color: #fff;
+    padding: 0.9rem 1.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.18);
+  }
+  .header-brand { display: flex; align-items: center; gap: 0.6rem; }
+  .header-logo {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+  .header-title { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.01em; }
+  .header-sub { font-weight: 400; font-size: 0.82rem; opacity: 0.85; margin-left: 0.4rem; }
+  .header-badge {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* Control Panel */
+  #control-panel {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    z-index: 10;
+  }
+  .panel-grid { display: grid; grid-template-columns: 240px 1fr auto; gap: 1.25rem; align-items: end; }
+  @media (max-width: 860px) { .panel-grid { grid-template-columns: 1fr; } }
+  .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .field-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  select, textarea, input {
+    font-family: inherit;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    outline: none;
+    transition: all 0.15s ease;
+  }
+  select:focus, textarea:focus, input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  
+  .sources-group { display: flex; gap: 1rem; flex-wrap: wrap; padding: 0.15rem 0; }
+  .source-check { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text-secondary); }
+  .source-check input { margin: 0; cursor: pointer; accent-color: var(--accent); }
+  
+  textarea { resize: vertical; min-height: 44px; height: 44px; line-height: 1.35; }
+  
+  .btn-run {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.4rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: background 0.15s ease, transform 0.1s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(15, 118, 110, 0.25);
+  }
+  .btn-run:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn-run:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Dialogue / Message Stream */
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.6rem 1.2rem;
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  /* Dialogue Row Layout */
+  .msg-row {
+    display: flex;
+    gap: 0.9rem;
+    width: 100%;
+    animation: fadeIn 0.2s ease-out;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .msg-row.user { justify-content: flex-end; }
+  .msg-row.agent { justify-content: flex-start; }
+
+  /* Avatars */
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .avatar.user-avatar { background: #e2e8f0; color: #475569; }
+  .avatar.agent-avatar { background: linear-gradient(135deg, #0f766e, #14b8a6); color: #fff; box-shadow: 0 2px 4px rgba(15, 118, 110, 0.2); }
+
+  /* Dialogue Content Bubble */
+  .bubble-container {
+    max-width: 86%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .sender-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    padding: 0 0.2rem;
+  }
+  .msg-row.user .sender-name { text-align: right; }
+  
+  .bubble {
+    display: inline-block;
+    padding: 0.85rem 1.15rem;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    text-align: left;
+    white-space: pre-wrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    line-height: 1.5;
+  }
+  .msg-row.user .bubble {
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    color: #fff;
+    border: none;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 3px 8px rgba(15, 118, 110, 0.25);
+  }
+  .msg-row.agent .bubble {
+    border-bottom-left-radius: 4px;
+    color: var(--text);
+  }
+  /* When the reply is an A2UI card, drop the bubble chrome so the card stands alone */
+  .bubble.rich {
+    background: transparent;
+    border: none;
+    padding: 0;
+    max-width: 100%;
+    white-space: normal;
+    box-shadow: none;
+  }
+
+  /* Example Prompts Bar */
+  .prompt-chips-wrapper {
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.6rem 1.2rem 0.3rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .chips-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .chips-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.65rem;
+  }
+  @media (max-width: 780px) { .chips-row { grid-template-columns: 1fr; } }
+  .prompt-chip {
+    background: #fff;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 0.55rem 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+  .prompt-chip:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(15, 118, 110, 0.08);
+  }
+  .chip-icon {
+    font-size: 1.1rem;
+    color: var(--accent);
+  }
+
+  /* Chat Form */
+  .chat-footer {
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 0.8rem 1.2rem 1.1rem 1.2rem;
+  }
+  form#chat-form {
+    display: flex;
+    gap: 0.6rem;
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  #chat-form input {
+    flex: 1;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+  #chat-form button {
+    padding: 0.75rem 1.4rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  #chat-form button:hover { background: var(--accent-hover); }
+
+  /* --- A2UI component styles (Card, Column, Row, Text, Divider, List, Image, Icon) --- */
+  .a2card {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    max-width: 100%;
+  }
+  .a2card + .a2card, .a2col > .a2card { margin-top: 0.9rem; }
+  .a2col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .a2row { display: flex; flex-direction: row; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .a2row.between { justify-content: space-between; }
+  .a2text { margin: 0; line-height: 1.5; }
+  .a2text.a2-h1 { font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.01em; }
+  .a2text.a2-h2 { font-size: 1.15rem; font-weight: 700; color: #1e293b; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; margin-bottom: 0.2rem; }
+  .a2text.a2-h3 { font-size: 1.05rem; font-weight: 600; color: #334155; }
+  .a2text.a2-h4 { font-size: 0.95rem; font-weight: 600; color: #475569; }
+  .a2text.a2-caption { font-size: 0.82rem; color: var(--muted); }
+  .a2divider { border: none; border-top: 1px solid var(--border); margin: 0.5rem 0; width: 100%; }
+  .a2img { max-width: 100%; border-radius: 8px; display: block; }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: 1.25rem; line-height: 1; vertical-align: middle; color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-brand">
+    <div class="header-logo">📈</div>
+    <div>
+      <span class="header-title">MarketStrat</span>
+      <span class="header-sub">Corporate Strategy & Equity Intelligence</span>
+    </div>
+  </div>
+  <span class="header-badge">A2A + Vertex AI</span>
+</header>
+
+<div id="control-panel">
+  <div class="panel-grid">
+    <!-- Top 50 S&P Tickers -->
+    <div class="field-group">
+      <label class="field-label" for="ticker-select">S&P 50 Ticker</label>
+      <select id="ticker-select">
+        <option value="NVDA">NVDA — NVIDIA Corp</option>
+        <option value="AAPL">AAPL — Apple Inc</option>
+        <option value="MSFT">MSFT — Microsoft Corp</option>
+        <option value="AMZN">AMZN — Amazon.com Inc</option>
+        <option value="GOOGL">GOOGL — Alphabet Inc (Class A)</option>
+        <option value="META">META — Meta Platforms Inc</option>
+        <option value="BRK-B">BRK-B — Berkshire Hathaway</option>
+        <option value="TSLA">TSLA — Tesla Inc</option>
+        <option value="AVGO">AVGO — Broadcom Inc</option>
+        <option value="LLY">LLY — Eli Lilly and Co</option>
+        <option value="JPM">JPM — JPMorgan Chase & Co</option>
+        <option value="WMT">WMT — Walmart Inc</option>
+        <option value="V">V — Visa Inc</option>
+        <option value="XOM">XOM — Exxon Mobil Corp</option>
+        <option value="UNH">UNH — UnitedHealth Group</option>
+        <option value="ORCL">ORCL — Oracle Corp</option>
+        <option value="MA">MA — Mastercard Inc</option>
+        <option value="COST">COST — Costco Wholesale</option>
+        <option value="HD">HD — Home Depot Inc</option>
+        <option value="PG">PG — Procter & Gamble Co</option>
+        <option value="JNJ">JNJ — Johnson & Johnson</option>
+        <option value="BAC">BAC — Bank of America Corp</option>
+        <option value="ABBV">ABBV — AbbVie Inc</option>
+        <option value="CRM">CRM — Salesforce Inc</option>
+        <option value="NFLX">NFLX — Netflix Inc</option>
+        <option value="KO">KO — Coca-Cola Co</option>
+        <option value="AMD">AMD — Advanced Micro Devices</option>
+        <option value="CVX">CVX — Chevron Corp</option>
+        <option value="MRK">MRK — Merck & Co</option>
+        <option value="PEP">PEP — PepsiCo Inc</option>
+        <option value="LIN">LIN — Linde plc</option>
+        <option value="TMO">TMO — Thermo Fisher Scientific</option>
+        <option value="WFC">WFC — Wells Fargo & Co</option>
+        <option value="CSCO">CSCO — Cisco Systems Inc</option>
+        <option value="ACN">ACN — Accenture plc</option>
+        <option value="MCD">MCD — McDonald's Corp</option>
+        <option value="ADBE">ADBE — Adobe Inc</option>
+        <option value="ABT">ABT — Abbott Laboratories</option>
+        <option value="IBM">IBM — International Business Machines</option>
+        <option value="GE">GE — GE Aerospace</option>
+        <option value="PM">PM — Philip Morris International</option>
+        <option value="CAT">CAT — Caterpillar Inc</option>
+        <option value="TXN">TXN — Texas Instruments</option>
+        <option value="INTU">INTU — Intuit Inc</option>
+        <option value="QCOM">QCOM — Qualcomm Inc</option>
+        <option value="VZ">VZ — Verizon Communications</option>
+        <option value="DIS">DIS — Walt Disney Co</option>
+        <option value="AMAT">AMAT — Applied Materials Inc</option>
+        <option value="PFE">PFE — Pfizer Inc</option>
+        <option value="NOW">NOW — ServiceNow Inc</option>
+      </select>
+    </div>
+
+    <!-- Specific Strategic Questions -->
+    <div class="field-group">
+      <label class="field-label" for="strategic-questions">Specific Strategic Questions to Answer</label>
+      <textarea id="strategic-questions" placeholder="e.g. How does current analyst sentiment correlate with their valuation multiple? What 3 capital allocation moves would improve their standing?"></textarea>
+    </div>
+
+    <!-- Run Button -->
+    <div>
+      <button id="btn-run-analysis" class="btn-run" type="button">
+        <span class="material-symbols-outlined" style="font-size:1.1rem; color:#fff;">play_arrow</span> Run Analysis
+      </button>
+    </div>
+  </div>
+
+  <!-- Source Options -->
+  <div class="field-group">
+    <div class="field-label">Analysis Data Sources</div>
+    <div class="sources-group">
+      <label class="source-check"><input type="checkbox" id="src-market" checked> Live Market Snapshot (Yahoo Finance)</label>
+      <label class="source-check"><input type="checkbox" id="src-analyst" checked> Analyst Consensus & Sentiment (Firestore)</label>
+      <label class="source-check"><input type="checkbox" id="src-reports" checked> Full Research Reports (Cloud Storage)</label>
+      <label class="source-check"><input type="checkbox" id="src-sec" checked> SEC 10-K/10-Q Filings (EDGAR)</label>
+      <label class="source-check"><input type="checkbox" id="src-sandbox" checked> Code Sandbox Quantitative Compute</label>
+    </div>
+  </div>
+</div>
+
+<div id="log"></div>
+
+<!-- Example Prompts Tailored to MarketStrat -->
+<div class="prompt-chips-wrapper">
+  <div class="chips-label">Quick Strategic Inquiries</div>
+  <div class="chips-row">
+    <button type="button" class="prompt-chip" data-prompt="Analyze NVDA: Calculate how their Forward P/E multiple compares with Wall Street consensus sentiment and formulate 3 strategic steps to diversify hyperscaler concentration.">
+      <span class="chip-icon">⚡</span>
+      <span><strong>NVDA:</strong> Multiple vs Sentiment & Moat</span>
+    </button>
+    <button type="button" class="prompt-chip" data-prompt="Evaluate AAPL: Assess services revenue growth vs hardware margins and recommend 3 capital allocation priorities.">
+      <span class="chip-icon">📊</span>
+      <span><strong>AAPL:</strong> Services Growth & Capital Allocation</span>
+    </button>
+    <button type="button" class="prompt-chip" data-prompt="Run strategic correlation on TSLA: Compare sell-side target prices with recent SEC filings and identify top 2 operational execution risks.">
+      <span class="chip-icon">🎯</span>
+      <span><strong>TSLA:</strong> Price vs Targets & Execution Risks</span>
+    </button>
+  </div>
+</div>
+
+<div class="chat-footer">
+  <form id="chat-form">
+    <input id="input" placeholder="Ask MarketStrat a strategic or equity question (e.g. 'Compare MSFT cloud growth with AWS')…" autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("chat-form");
+const input = document.getElementById("input");
+const tickerSelect = document.getElementById("ticker-select");
+const strategicQuestions = document.getElementById("strategic-questions");
+const btnRun = document.getElementById("btn-run-analysis");
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function bubble(who) {
+  const row = el("div", "msg-row " + who);
+  
+  if (who === "agent") {
+    const av = el("div", "avatar agent-avatar", "MS");
+    row.appendChild(av);
+  }
+  
+  const container = el("div", "bubble-container");
+  const senderLabel = el("div", "sender-name", who === "agent" ? "MarketStrat AI" : "You");
+  const b = el("div", "bubble");
+  
+  container.appendChild(senderLabel);
+  container.appendChild(b);
+  row.appendChild(container);
+  
+  if (who === "user") {
+    const av = el("div", "avatar user-avatar", "👤");
+    row.appendChild(av);
+  }
+  
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog subset).
+ * Renders Card / Column / Row / Text / Divider / List / Image / Icon.
+ * Anything else falls back to plain text (see renderReply). All text goes in via
+ * textContent and image URLs are validated, so agent output can't inject HTML.
+ * -------------------------------------------------------------------------- */
+
+// A "bound value" is usually {literalString: "..."}; we only support literals.
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+// child ids of a component's props: single `child` and/or `children.explicitList`.
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+// A2UI icon names are camelCase (locationOn); Material Symbols wants snake_case.
+function iconName(n) { return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase(); }
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;   // missing / cycle guard
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = el("div", "a2card"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = el("div", horizontal ? "a2row" : "a2col"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Row": {
+      const d = el("div", "a2row" + (props.distribution === "spaceBetween" ? " between" : ""));
+      kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Text": {
+      const t = el("div", "a2text");
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider":
+      return el("hr", "a2divider");
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;   // only allow safe URLs
+      const img = el("img", "a2img"); img.src = src; img.alt = boundStr(props.alt) || ""; return img;
+    }
+    case "Icon": {
+      const s = el("span", "material-symbols-outlined"); s.textContent = iconName(boundStr(props.name) || props.name); return s;
+    }
+    default:
+      return null;   // unknown component -> skipped (text fallback covers content)
+  }
+}
+
+// Render one or more A2UI messages (beginRendering + surfaceUpdate) into `container`.
+// Returns true if anything was drawn.
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {   // no valid root given -> infer un-referenced components
+    const referenced = new Set();
+    for (const id in comps) { const spec = comps[id]; childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c)); }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) { const node = buildNode(rid, comps, new Set()); if (node) { container.appendChild(node); drew = true; } }
+  return drew;
+}
+
+// Fallback: pull every Text value out of the messages as plain text.
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(b, parts) {
+  b.textContent = "";   // clear the "…" placeholder
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) b.appendChild(el("div", null, textStr));
+
+  if (a2ui.length) {
+    b.classList.add("rich");
+    if (!renderSurface(a2ui, b)) b.appendChild(el("div", null, flattenText(a2ui) || "(no card content)"));
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  log.scrollTop = log.scrollHeight;
+}
+
+// The proxy returns { parts: [{kind:"text",text} | {kind:"a2ui",data}] }.
+async function sendMessage(text) {
+  if (!text) return;
+  bubble("user").textContent = text;
+  const b = bubble("agent"); b.textContent = "…";
+  btnRun.disabled = true;
+  try {
+    const res = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
+    renderReply(b, data.parts || []);
+  } catch (e) {
+    b.textContent = "Error: " + e.message;
+  } finally {
+    btnRun.disabled = false;
+  }
+}
+
+// Chat form submission
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  await sendMessage(text);
+});
+
+// Example Prompt Chips
+document.querySelectorAll(".prompt-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const promptText = chip.getAttribute("data-prompt");
+    if (promptText) {
+      input.value = promptText;
+      input.focus();
+    }
+  });
+});
+
+// Run Analysis button
+btnRun.addEventListener("click", async () => {
+  const ticker = tickerSelect.value;
+  const companyName = tickerSelect.options[tickerSelect.selectedIndex].text;
+  
+  const sources = [];
+  if (document.getElementById("src-market").checked) sources.push("Live Market Snapshot (Yahoo Finance)");
+  if (document.getElementById("src-analyst").checked) sources.push("Analyst Consensus & Sentiment (Firestore)");
+  if (document.getElementById("src-reports").checked) sources.push("Full Research Reports (Cloud Storage)");
+  if (document.getElementById("src-sec").checked) sources.push("SEC 10-K/10-Q Filings (EDGAR)");
+  if (document.getElementById("src-sandbox").checked) sources.push("Code Sandbox Quantitative Compute");
+  
+  const specificQuestions = strategicQuestions.value.trim();
+  
+  let prompt = "";
+  if (specificQuestions) {
+    prompt += `CRITICAL PRIORITY — Directly answer the following specific strategic questions regarding ${companyName} (${ticker}):\n`;
+    prompt += `"${specificQuestions}"\n\n`;
+    prompt += `In addition to the standard overview, generate a dedicated card titled "Strategic Inquiry & Analysis" answering these questions with concrete facts and data.\n`;
+  } else {
+    prompt += `Please run a comprehensive strategic evaluation for ${companyName} (${ticker}).\n`;
+    prompt += `Assess financial fundamentals, Wall Street sentiment consensus, correlate sentiment with stock performance, and formulate 3 prioritized strategic recommendations to improve standing.\n`;
+  }
+
+  if (sources.length > 0) {
+    prompt += `\nLeverage these data sources: ${sources.join(", ")}.\n`;
+  }
+
+  await sendMessage(prompt);
+});
+</script>
+</body>
+</html>
