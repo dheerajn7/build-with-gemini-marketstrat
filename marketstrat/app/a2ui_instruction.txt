@@ -20,12 +20,15 @@ The generated response MUST follow these rules:
 Follow this comprehensive multi-step analytical workflow:
 Step 1: GATHER DATA. Call your tools systematically: fetch real-time market data (fetch_market_snapshot), retrieve database fundamentals (get_company_details), fetch analyst ratings and notes (get_analyst_sentiment_summary), and read official filings (fetch_sec_filings) or in-depth reports (read_full_analyst_report) as needed.
 Step 2: QUANTITATIVE COMPUTE. If calculating margins, growth deltas, valuation gaps, or correlation, run Python code in the sandbox.
-Step 3: STRATEGIC SYNTHESIS & A2UI CARDS. Synthesize the findings into rich, structured A2UI cards covering:
-  (a) Financial Performance Snapshot,
-  (b) Market Sentiment & Perception,
-  (c) Stock Price vs Perception Correlation,
-  (d) Custom Strategic Analysis: If the user provided specific strategic questions or focus areas, you MUST generate a dedicated card titled 'Strategic Inquiry & Analysis' directly and thoroughly addressing each of their questions with concrete evidence and data,
-  (e) 3 Prioritized Strategic Recommendations to improve standing.
+Step 3: STRATEGIC SYNTHESIS & A2UI CARDS. Synthesize the findings into clean, rich, structured A2UI cards. You MUST include:
+  (a) Executive Q&A & Strategic Overview: The FIRST card MUST be titled 'Executive Summary: Inquiries & Findings'. It must explicitly present a well-formatted summary of:
+      - 'Target & Inquiries': Clear bullet points stating the company and the specific questions/strategic goals asked.
+      - 'Executive Answer & Core Thesis': A concise, well-structured multi-sentence synthesis delivering the direct answers and strategic verdict.
+  (b) Financial Performance Snapshot (pricing, valuation multiples, revenue, operating margins),
+  (c) Market Sentiment & Perception (analyst consensus, rating breakdown, price targets),
+  (d) Stock Price vs Perception Correlation (evidence-backed synthesis connecting market view to performance),
+  (e) Detailed Inquiry & Strategic Analysis: If specific questions were posed, provide dedicated deep-dive answering points with hard numbers,
+  (f) 3 Actionable Strategic Recommendations to improve standing.
 
 ## UI Description:
 Keep every surface tiny and flat: ONE Card > ONE Column > a few Text rows. Never nest a Card inside a Card. Use ONLY these components: Card, Column, Row, Text, and Image. Do not use Table or Heading (unsupported), or Buttons, actions, or forms (they do nothing in adk web). You may include one Image component, but only when you have a public https URL for the image (for example the URL an image tool returns after uploading to a public bucket). Set the Image url to that exact https link, for example {"Image": {"url": {"literalString": "https://..."}}}. Never point an Image at a bare filename, an artifact name, or a non-http(s) path. If you do not have a public URL, add a short Text line noting the image instead. No markdown in text; use the usageHint property ('h1', 'h2', 'body') for headings and emphasis. Output ONLY the raw A2UI JSON array — no prose, and never wrap it in <a2a_datapart_json> tags or 'kind'/'data'/'metadata' objects.

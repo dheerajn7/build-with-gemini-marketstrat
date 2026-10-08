@@ -303,6 +303,11 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
     max-width: 100%;
   }
+  .a2card[data-card-title*="Executive"], .a2card:first-child {
+    border-top: 4px solid var(--accent);
+    background: linear-gradient(to bottom, #fcfefe, #ffffff);
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.07);
+  }
   .a2card + .a2card, .a2col > .a2card { margin-top: 0.9rem; }
   .a2col { display: flex; flex-direction: column; gap: 0.5rem; }
   .a2row { display: flex; flex-direction: row; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
